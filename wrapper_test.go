@@ -1,6 +1,7 @@
 package gitssh
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -31,6 +32,34 @@ func TestBasicLifecycle(t *testing.T) {
 	}
 	if err := wrapper.Cleanup(); err != nil {
 		t.Fatalf("wrapper.Cleanup err = %v, expected nil", err)
+	}
+}
+
+func TestEnvironmentAdd(t *testing.T) {
+	wrapper, _ := NewWrapper(sshKey)
+	defer wrapper.Cleanup()
+	newEnv := wrapper.Environment([]string{})
+	lenEnv := len(newEnv)
+	if lenEnv != 1 {
+		t.Errorf("len(wrapper.Environment() = %d, expected 1", lenEnv)
+	}
+	expEnv := fmt.Sprintf("GIT_SSH=%s", wrapper.GitSSH())
+	if newEnv[0] != expEnv {
+		t.Errorf("unexpected environment entry: %q", newEnv[0])
+	}
+}
+
+func TestEnvironmentReplace(t *testing.T) {
+	wrapper, _ := NewWrapper(sshKey)
+	defer wrapper.Cleanup()
+	newEnv := wrapper.Environment([]string{"GIT_SSH=bacon"})
+	lenEnv := len(newEnv)
+	if lenEnv != 1 {
+		t.Errorf("len(wrapper.Environment() = %d, expected 1", lenEnv)
+	}
+	expEnv := fmt.Sprintf("GIT_SSH=%s", wrapper.GitSSH())
+	if newEnv[0] != expEnv {
+		t.Errorf("unexpected environment entry: %q", newEnv[0])
 	}
 }
 

@@ -2,8 +2,10 @@ package gitssh
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"text/template"
 )
 
@@ -19,6 +21,11 @@ type Wrapper interface {
 	// Cleanup removes all files used by the Wrapper. Using it invalidates
 	// the Wrapper.
 	Cleanup() error
+
+	// Environment returns an environment with just the GIT_SSH variable
+	// updated. If passed a nil argument it will use os.Environ() as base,
+	// otherwise it will use whatever is passed as an argument.
+	Environment([]string) []string
 
 	// GitSSH returns the value of the script which - if set - will have Git
 	// use a non-standard SSH connection.
@@ -85,6 +92,20 @@ func (w *wrapperImpl) Cleanup() error {
 		}
 	}
 	return nil
+}
+
+func (w *wrapperImpl) Environment(original []string) []string {
+	if original == nil {
+		original = os.Environ()
+	}
+	var ret []string
+	needle := fmt.Sprintf("%s=", envVarName)
+	for _, pair := range original {
+		if !strings.HasPrefix(pair, needle) {
+			ret = append(ret, pair)
+		}
+	}
+	return append(ret, fmt.Sprintf("%s%s", needle, w.GitSSH()))
 }
 
 func (w *wrapperImpl) GitSSH() string {
