@@ -3,4 +3,4 @@ Git SSH wrapper for Go
 
 Go version of [this](https://github.com/martinemde/git-ssh-wrapper) Ruby library.
 
-[![wercker status](https://app.wercker.com/status/c446b3659bd68d1b08b1be8602b8e188/m "wercker status")](https://app.wercker.com/project/bykey/c446b3659bd68d1b08b1be8602b8e188)
+[![wercker status](https://app.wercker.com/status/c446b3659bd68d1b08b1be8602b8e188/m/master "wercker status")](https://app.wercker.com/project/bykey/c446b3659bd68d1b08b1be8602b8e188)
