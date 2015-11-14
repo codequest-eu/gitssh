@@ -126,7 +126,7 @@ func (w *wrapperImpl) templateArgs() *tmplArgs {
 }
 
 func (w *wrapperImpl) createScript() error {
-	tmpl, err := template.ParseFiles("ssh.template")
+	tmpl, err := template.New("script").Parse(sshTemplate)
 	if err != nil {
 		return err
 	}
